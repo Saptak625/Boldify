@@ -75,17 +75,17 @@ def boldify(msg):
     counter += 1
   return None
 
-app = Flask('Boldify')
-app.config['SECRET_KEY'] = '7b7e30111ddc1f8a5b1d80934d336798'
-app.config['CKEDITOR_PKG_TYPE'] = 'basic'
-ckeditor = CKEditor(app)
+application = Flask('Boldify')
+application.config['SECRET_KEY'] = '7b7e30111ddc1f8a5b1d80934d336798'
+application.config['CKEDITOR_PKG_TYPE'] = 'basic'
+ckeditor = CKEditor(application)
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/', methods=['GET', 'POST'])
+@application.route('/', methods=['GET', 'POST'])
+@application.route('/', methods=['GET', 'POST'])
 def homepage():
   return render_template('homepage.html')
 
-@app.route('/encode', methods=['GET', 'POST'])
+@application.route('/encode', methods=['GET', 'POST'])
 def boldifyEncoder():
   submitted = False
   form = BoldifyEncryptForm()
@@ -97,7 +97,7 @@ def boldifyEncoder():
     output=boldify(msg)
   return render_template('boldifyencoder.html', form=form, submitted=submitted, output=output)
 
-@app.route('/decode', methods=['GET', 'POST'])
+@application.route('/decode', methods=['GET', 'POST'])
 def boldifyDecoder():
   submitted=False
   decodedMessage = ''
@@ -110,4 +110,4 @@ def boldifyDecoder():
       decodedMessage += richText[i.span()[1]]
   return render_template('boldifydecoder.html', submitted=submitted, decodedMessage=decodedMessage)
 
-app.run(host='0.0.0.0', port=8080)
+application.run(host='0.0.0.0', port=8080)
