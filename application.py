@@ -110,4 +110,6 @@ def boldifyDecoder():
       decodedMessage += richText[i.span()[1]]
   return render_template('boldifydecoder.html', submitted=submitted, decodedMessage=decodedMessage)
 
-application.run(host='0.0.0.0', port=8080)
+if __name__ == "__main__":
+    #Development only
+    application.run(debug=True)
