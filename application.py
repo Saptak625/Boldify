@@ -81,7 +81,7 @@ application.config['CKEDITOR_PKG_TYPE'] = 'basic'
 ckeditor = CKEditor(application)
 
 @application.route('/', methods=['GET', 'POST'])
-@application.route('/', methods=['GET', 'POST'])
+@application.route('/home', methods=['GET', 'POST'])
 def homepage():
   return render_template('homepage.html')
 
