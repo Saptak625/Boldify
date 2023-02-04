@@ -1,31 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Boldify</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-</head>
-<body>
+{% extends "template.html" %}
+{% block title %}Home{% endblock title %}
+{% block navLink %}home{% endblock navLink %}
 
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand active" href="/">Boldify - Bold Your Secrets</a>
-        </div>
-        <ul class="nav navbar-nav">
-            <li><a href="encode">Encode</a></li>
-            <li><a href="decode">Decode</a></li>
-        </ul>
-    </div>
-</nav>
-  
-<div class="container">
-  <h1>Boldify</h1>
-  <hr>
-  <h3>Boldify is a steganographic encryption scheme that hides a message within another message using bold letters. This site is the official encoding and decoding engine of this scheme.</h3>
+{% block body %}
+<h1><b>Bold</b>ify</h1>
+<hr>
+<h3>Boldify is a steganographic encryption scheme that hides a message within another message using bold letters. This site is the official encoding and decoding engine of this scheme.</h3>
+<div class="d-flex justify-content-center mt-3">
+  <a href="encode"><button class="btn btn-lg btn-primary me-3">Encode</button></a>
+  <a href="decode"><button class="btn btn-lg btn-secondary">Decode</button></a>
 </div>
-</body>
-</html>
+{% endblock body %}

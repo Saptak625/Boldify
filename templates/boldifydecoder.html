@@ -1,44 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Boldify Decoder</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-</head>
-<body>
+{% extends "template.html" %}
+{% block title %}Decoder{% endblock title %}
+{% block pageTitle %}Boldify Decoder{% endblock pageTitle %}
+{% block navLink %}decode{% endblock navLink %}
 
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand active" href="/">Boldify - Bold Your Secrets</a>
-        </div>
-        <ul class="nav navbar-nav">
-            <li><a href="encode">Encode</a></li>
-            <li><a href="decode">Decode</a></li>
-        </ul>
-    </div>
-</nav>
-  
-<div class="container">
-  {% if not submitted %}
-  <h1>Boldify Decoder</h1>
-  <hr>
-  <form method="POST" action="">
-    <div class="form-group">
-      {{ ckeditor.create() }}
-    </div>
-    <input type="submit" class="btn btn-primary">
-  </form>
-  {% else %}
-  <h1>Boldify Decoder Results:</h1>
-  <hr>
-  <p style="font-size: 20px;">{{ decodedMessage }}</p>
-  <a href=""><button type="button" class="btn btn-primary btn-md">Decode More Text!</button></a>
-  {% endif %}
-</div>
+{% block body %}
+{{ super() }}
+<form method="POST" action="" class="needs-validation" novalidate>
+  {{ ckeditor.create() }}
+  <input type="submit" class="btn btn-primary mt-3">
+</form>
+</form>
+{% endblock body %}
+
+{% block results %}
+{{ super() }}
+{% if data != None %}
+  <p style="font-size: 20px;">{{ data }}</p>
+{% endif %}
+{% endblock results %}
+
+{% block script %}
 <script src="https://cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
-</body>
-</html>
+{% endblock script %}

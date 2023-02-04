@@ -1,20 +1,21 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, flash, request
 import markovify
 import re
-import spacy
+import nltk
+from nltk.tag import pos_tag
 from forms import BoldifyEncryptForm
 from markupsafe import Markup
 from flask_ckeditor import CKEditor
 
-nlp = spacy.load("en_core_web_sm")
-
 class POSifiedText(markovify.Text):
-    def word_split(self, sentence):
-        return ["::".join((word.orth_, word.pos_)) for word in nlp(sentence)]
+  def word_split(self, sentence):
+    words = nltk.word_tokenize(sentence)
+    tagged = pos_tag(words)
+    return tagged
 
-    def word_join(self, words):
-        sentence = " ".join(word.split("::")[0] for word in words)
-        return sentence
+  def word_join(self, words):
+    sentence = " ".join([word[0] for word in words])
+    return sentence
 
 def getPara():
   with open('data.txt','r', encoding='utf-8') as f:
@@ -47,15 +48,14 @@ def boldify(msg):
       try:
         lowerIndex = remainingText.index(letter)
       except:
-        print("No Lower Index")
+        pass
       try:
         upperIndex = remainingText.index(letter.upper())
       except:
-        print("No Upper Index")
+        pass
       index = None
       if lowerIndex == None and upperIndex == None:
         error = True
-        break
       elif lowerIndex != None and upperIndex == None:
         index = lowerIndex
       elif lowerIndex == None and upperIndex != None:
@@ -71,9 +71,12 @@ def boldify(msg):
     except:
       boldifiedText += remainingText
     if not error:
-      return Markup(''.join(boldifiedText).replace('\n', ''))
+      boldifiedText = ''.join(boldifiedText).replace('\n', '').replace('  ', ' ')
+      sentences = boldifiedText.split('. ')
+      shortenedText = '. '.join([i for i in sentences if '</b>' in i])
+      return Markup(f'{shortenedText}.')
     counter += 1
-  return None
+  raise Exception('Letter not found in remaining text. Please try again or shorten your message.')
 
 application = Flask('Boldify')
 application.config['SECRET_KEY'] = '7b7e30111ddc1f8a5b1d80934d336798'
@@ -83,32 +86,35 @@ ckeditor = CKEditor(application)
 @application.route('/', methods=['GET', 'POST'])
 @application.route('/home', methods=['GET', 'POST'])
 def homepage():
-  return render_template('homepage.html')
+  return render_template('homepage.html', data=None)
 
 @application.route('/encode', methods=['GET', 'POST'])
 def boldifyEncoder():
-  submitted = False
+  data = None
   form = BoldifyEncryptForm()
-  output = None
   if form.validate_on_submit():
-    submitted=True
     msg=str(request.form['boldMessage']).lower()
     msg=''.join([i for i in msg if i.isalpha()])
-    output=boldify(msg)
-  return render_template('boldifyencoder.html', form=form, submitted=submitted, output=output)
+    try:
+      data=boldify(msg)
+    except:
+      print('Exception raised')
+      flash('Letter not found in remaining text. Please try again or shorten your message.', 'error')
+  return render_template('boldifyencoder.html', form=form, data=data)
 
 @application.route('/decode', methods=['GET', 'POST'])
 def boldifyDecoder():
-  submitted=False
-  decodedMessage = ''
+  data = None
   if request.method == 'POST':
-    submitted=True
+    data = ""
     richText = request.form.get('ckeditor')
     richText = richText[3:len(richText)-6]
     iterator = re.finditer("<strong>", richText)
     for i in iterator:
-      decodedMessage += richText[i.span()[1]]
-  return render_template('boldifydecoder.html', submitted=submitted, decodedMessage=decodedMessage)
+      if richText[i.span()[1]]:
+        data += richText[i.span()[1]]
+    data = data.lower()
+  return render_template('boldifydecoder.html', data=data)
 
 if __name__ == "__main__":
     #Development only
