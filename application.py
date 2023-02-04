@@ -78,17 +78,17 @@ def boldify(msg):
     counter += 1
   raise Exception('Letter not found in remaining text. Please try again or shorten your message.')
 
-application = Flask('Boldify')
-application.config['SECRET_KEY'] = '7b7e30111ddc1f8a5b1d80934d336798'
-application.config['CKEDITOR_PKG_TYPE'] = 'basic'
-ckeditor = CKEditor(application)
+app = Flask('Boldify')
+app.config['SECRET_KEY'] = '7b7e30111ddc1f8a5b1d80934d336798'
+app.config['CKEDITOR_PKG_TYPE'] = 'basic'
+ckeditor = CKEditor(app)
 
-@application.route('/', methods=['GET', 'POST'])
-@application.route('/home', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 def homepage():
   return render_template('homepage.html', data=None)
 
-@application.route('/encode', methods=['GET', 'POST'])
+@app.route('/encode', methods=['GET', 'POST'])
 def boldifyEncoder():
   data = None
   form = BoldifyEncryptForm()
@@ -102,7 +102,7 @@ def boldifyEncoder():
       flash('Letter not found in remaining text. Please try again or shorten your message.', 'error')
   return render_template('boldifyencoder.html', form=form, data=data)
 
-@application.route('/decode', methods=['GET', 'POST'])
+@app.route('/decode', methods=['GET', 'POST'])
 def boldifyDecoder():
   data = None
   if request.method == 'POST':
@@ -118,4 +118,4 @@ def boldifyDecoder():
 
 if __name__ == "__main__":
     #Development only
-    application.run(debug=True)
+    app.run(debug=True)
